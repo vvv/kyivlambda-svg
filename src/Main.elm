@@ -15,6 +15,8 @@ main =
 
 -- Adapted from
 -- https://upload.wikimedia.org/wikipedia/commons/1/1c/Haskell-Logo.svg
+-- and
+-- https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/3377/large/1417630540/haskell.png
 logoHaskell : Html msg
 logoHaskell =
     Svg.svg
@@ -23,17 +25,45 @@ logoHaskell =
         , SvgA.height "240"
         , SvgA.viewBox "0 0 170 120"
         ]
-        [ Svg.g
-            [ SvgA.style "fill:#666666" ]
+        [ Svg.path
+            [ SvgA.d
+                """
+                M 0,120
+                L 40,60
+                L 0,0
+                L 30,0
+                L 70,60
+                L 30,120
+                z
+                """
+            , SvgA.style "fill:#463c62"
+            ]
+            []
+        , Svg.path
+            [ SvgA.d
+                """
+                M 40,120
+                L 80,60
+                L 40,0
+                L 70 0
+                L 150,120
+                L 120,120
+                L 95,82.5
+                L 70,120
+                z
+                """
+            , SvgA.style "fill:#685a93"
+            ]
+            []
+        , Svg.g
+            [ SvgA.style "fill:#8f528c" ]
             [ Svg.path
                 [ SvgA.d
                     """
-                    M 0,120
-                    L 40,60
-                    L 0,0
-                    L 30,0
-                    L 70,60
-                    L 30,120
+                    M 116.666667,55
+                    L 103.333333,35
+                    L 170,35
+                    L 170,55
                     z
                     """
                 ]
@@ -45,35 +75,6 @@ logoHaskell =
                     L 123.333333,65
                     L 170,65
                     L 170,85
-                    z
-                    """
-                ]
-                []
-            , Svg.path
-                [ SvgA.d
-                    """
-                    M 116.666667,55
-                    L 103.333333,35
-                    L 170,35
-                    L 170,55
-                    z
-                    """
-                ]
-                []
-            ]
-        , Svg.g
-            [ SvgA.style "fill:#999999" ]
-            [ Svg.path
-                [ SvgA.d
-                    """
-                    M 40,120
-                    L 80,60
-                    L 40,0
-                    L 70 0
-                    L 150,120
-                    L 120,120
-                    L 95,82.5
-                    L 70,120
                     z
                     """
                 ]

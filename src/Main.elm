@@ -7,13 +7,85 @@ import Svg.Attributes as SvgA
 
 main : Html msg
 main =
-    metroKyiv
+    Html.div []
+        [ logoHaskell
+        , logoKyivMetro
+        ]
 
 
--- Adopted from
+-- Adapted from
+-- https://upload.wikimedia.org/wikipedia/commons/1/1c/Haskell-Logo.svg
+logoHaskell : Html msg
+logoHaskell =
+    Svg.svg
+        [ SvgA.version "1.1"
+        , SvgA.width "340"
+        , SvgA.height "240"
+        , SvgA.viewBox "0 0 170 120"
+        ]
+        [ Svg.g
+            [ SvgA.style "fill:#666666" ]
+            [ Svg.path
+                [ SvgA.d
+                    """
+                    M 0,120
+                    L 40,60
+                    L 0,0
+                    L 30,0
+                    L 70,60
+                    L 30,120
+                    z
+                    """
+                ]
+                []
+            , Svg.path
+                [ SvgA.d
+                    """
+                    M 136.666667,85
+                    L 123.333333,65
+                    L 170,65
+                    L 170,85
+                    z
+                    """
+                ]
+                []
+            , Svg.path
+                [ SvgA.d
+                    """
+                    M 116.666667,55
+                    L 103.333333,35
+                    L 170,35
+                    L 170,55
+                    z
+                    """
+                ]
+                []
+            ]
+        , Svg.g
+            [ SvgA.style "fill:#999999" ]
+            [ Svg.path
+                [ SvgA.d
+                    """
+                    M 40,120
+                    L 80,60
+                    L 40,0
+                    L 70 0
+                    L 150,120
+                    L 120,120
+                    L 95,82.5
+                    L 70,120
+                    z
+                    """
+                ]
+                []
+            ]
+        ]
+
+
+-- Adapted from
 -- https://upload.wikimedia.org/wikipedia/commons/b/be/Kyiv_Metro_logo.svg
-metroKyiv : Html msg
-metroKyiv =
+logoKyivMetro : Html msg
+logoKyivMetro =
     let
         style1 =
             SvgA.style

@@ -4,10 +4,15 @@ import Browser
 import Color exposing (lightGrey, rgb255)
 import Html exposing (Html)
 import TypedSvg as TSvg
-import TypedSvg.Attributes as TSvgA exposing (fill, strokeLinejoin, viewBox)
+import TypedSvg.Attributes as TSvgA exposing
+  ( fill
+  , strokeLinejoin
+  , transform
+  , viewBox
+  )
 import TypedSvg.Attributes.InPx exposing (height, strokeWidth, width)
-import TypedSvg.Core exposing (Attribute, Svg)
-import TypedSvg.Types exposing (Fill(..), StrokeLinejoin(..))
+import TypedSvg.Core exposing (Attribute, Svg, node)
+import TypedSvg.Types exposing (Fill(..), StrokeLinejoin(..), Transform(..))
 
 
 main : Program () Model msg
@@ -35,7 +40,7 @@ type Model
 
 init : Model
 init =
-    Haskell
+    KyivHaskell
 
 
 ----------------------------------------------------------------------
@@ -54,6 +59,9 @@ attributes model =
             [ width 340, height 240, viewBox 0 0 170 120 ]
 
         KyivMetro ->
+            [ width 311.75, height 363.125 ]
+
+        KyivHaskell ->
             [ width 311.75, height 363.125 ]
 
         _ ->
@@ -87,6 +95,21 @@ svgs model =
                 , leafMiddle
                 , leafRight
                 ]
+
+        KyivHaskell ->
+            List.map pathToSvg
+                [ outerArc
+                , leafLeft
+                , leafMiddle
+                , leafRight
+                ]
+                ++ [ node "svg"
+                        [ viewBox 0 0 170 120 ]  -- XXX Use `attributes`?
+                        [ TSvg.g
+                            [ transform [ Scale 0.65 0.65, Translate 55 -15 ] ]
+                            (svgs Haskell)
+                        ]
+                   ]
 
         _ ->
             Debug.todo "XXX IMPLEMENTME"

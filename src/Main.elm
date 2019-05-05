@@ -1,9 +1,13 @@
 module Main exposing (main)
 
 import Browser
+import Color exposing (lightGrey, rgb255)
 import Html exposing (Html)
-import Svg exposing (Svg)
-import Svg.Attributes as SvgA
+import TypedSvg as TSvg
+import TypedSvg.Attributes as TSvgA exposing (fill, strokeLinejoin, viewBox)
+import TypedSvg.Attributes.InPx exposing (height, strokeWidth, width)
+import TypedSvg.Core exposing (Attribute, Svg)
+import TypedSvg.Types exposing (Fill(..), StrokeLinejoin(..))
 
 
 main : Program () Model msg
@@ -20,13 +24,13 @@ main =
 
 
 type Model
-    = Elm
-    | Haskell
-    | KyivMetro
-    | KyivHaskell
-    | KyivElm
-    | KyivRust
-    | KyivLambda
+  = Elm
+  | Haskell
+  | KyivMetro
+  | KyivHaskell
+  | KyivElm
+  | KyivRust
+  | KyivLambda
 
 
 init : Model
@@ -40,33 +44,44 @@ init =
 
 view : Model -> Html msg
 view model =
-    Svg.svg (attributes model) (svgs model)
+    TSvg.svg (attributes model) (svgs model)
 
 
 ----------------------------------------------------------------------
 
 
-attributes : Model -> List (Svg.Attribute msg)
+attributes : Model -> List (Attribute msg)
 attributes model =
     case model of
         Haskell ->
-            [ SvgA.viewBox "0 0 170 120" ]
+            [ viewBox 0 0 170 120 ]
 
         KyivMetro ->
-            [ SvgA.width "311.75", SvgA.height "363.125" ]
+            [ width 311.75, height 363.125 ]
 
         _ ->
             Debug.todo "XXX IMPLEMENTME"
 
 
+type alias Path msg =
+  { d : String
+  , style : Model -> List (Attribute msg)
+  }
+
+
 svgs : Model -> List (Svg msg)
 svgs model =
+    let
+        path : Path msg -> Svg msg
+        path p =
+            TSvg.path (TSvgA.d p.d :: p.style model) []
+    in
     case model of
         Haskell ->
             Debug.todo "XXX IMPLEMENTME"
 
         KyivMetro ->
-            List.map (path model)
+            List.map path
                 [ outerArc
                 , innerSemicircle
                 , letterM
@@ -81,65 +96,11 @@ svgs model =
 
 
 ----------------------------------------------------------------------
--- Helpers
-
-
-type alias Path =
-    { d : String
-    , style : Model -> PathStyle
-    }
-
-
-path : Model -> Path -> Svg msg
-path model p =
-    Svg.path
-        [ SvgA.d p.d
-        , SvgA.style <| fromPathStyle <| p.style model
-        ]
-        []
-
-
--- XXX Use `typed-svg` package.
-
-
-type StrokeLinejoin
-    = Bevel
-    | Miter
-
-
-fromStrokeLinejoin : StrokeLinejoin -> String
-fromStrokeLinejoin x =
-    case x of
-        Bevel ->
-            "bevel"
-
-        Miter ->
-            "miter"
-
-
-type alias PathStyle =
-    { fill : String
-    , strokeWidth : Float
-    , strokeLinejoin : StrokeLinejoin
-    }
-
-
-fromPathStyle : PathStyle -> String
-fromPathStyle ps =
-    "fill:"
-        ++ ps.fill
-        ++ "; stroke-width:"
-        ++ String.fromFloat ps.strokeWidth
-        ++ "; stroke-linejoin:"
-        ++ fromStrokeLinejoin ps.strokeLinejoin
-
-
-----------------------------------------------------------------------
 -- Haskell logo adapted from
 -- https://upload.wikimedia.org/wikipedia/commons/1/1c/Haskell-Logo.svg
 
 
-element1_XXX : Path
+element1_XXX : Path msg
 element1_XXX =
     Path
         """
@@ -159,45 +120,57 @@ element1_XXX =
 -- https://upload.wikimedia.org/wikipedia/commons/b/be/Kyiv_Metro_logo.svg
 
 
-colorLeaf : Model -> String
+colorLeaf : Model -> Fill
 colorLeaf model =
-    if model == KyivMetro then
-        "#00923f"
+    Fill <|
+        if model == KyivMetro then
+            rgb255 0 0x92 0x3f
+        else
+            rgb255 0x46 0x3c 0x62
 
-    else
-        "#463c62"
 
-
-colorEdge : Model -> String
+colorEdge : Model -> Fill
 colorEdge model =
-    if model == KyivMetro then
-        "#fef406"
+    Fill <|
+        if model == KyivMetro then
+            rgb255 0xfe 0xf4 6
+        else
+            lightGrey
 
-    else
-        "lightgrey"
 
-
-style1_XXX : Model -> PathStyle
+style1_XXX : Model -> List (Attribute msg)
 style1_XXX model =
-    PathStyle (colorEdge model) 0.5 Bevel
+    [ fill (colorEdge model)
+    , strokeWidth 0.5
+    , strokeLinejoin StrokeLinejoinBevel
+    ]
 
 
-style2_XXX : Model -> PathStyle
+style2_XXX : Model -> List (Attribute msg)
 style2_XXX model =
-    PathStyle (colorLeaf model) 0.1 Miter
+    [ fill (colorLeaf model)
+    , strokeWidth 0.1
+    , strokeLinejoin StrokeLinejoinMiter
+    ]
 
 
-style3_XXX : Model -> PathStyle
+style3_XXX : Model -> List (Attribute msg)
 style3_XXX model =
-    PathStyle (colorEdge model) 3.5 Miter
+    [ fill (colorEdge model)
+    , strokeWidth 3.5
+    , strokeLinejoin StrokeLinejoinMiter
+    ]
 
 
-style4_XXX : Model -> PathStyle
+style4_XXX : Model -> List (Attribute msg)
 style4_XXX model =
-    PathStyle (colorLeaf model) 1 Miter
+    [ fill (colorLeaf model)
+    , strokeWidth 1
+    , strokeLinejoin StrokeLinejoinMiter
+    ]
 
 
-outerArc : Path
+outerArc : Path msg
 outerArc =
     Path
         """
@@ -217,7 +190,7 @@ outerArc =
         style1_XXX
 
 
-innerSemicircle : Path
+innerSemicircle : Path msg
 innerSemicircle =
     Path
         """
@@ -232,7 +205,7 @@ innerSemicircle =
         style1_XXX
 
 
-letterM : Path
+letterM : Path msg
 letterM =
     Path
         """
@@ -252,7 +225,7 @@ letterM =
         style2_XXX
 
 
-leavesBg : Path
+leavesBg : Path msg
 leavesBg =
     Path
         """
@@ -275,7 +248,7 @@ leavesBg =
         style3_XXX
 
 
-leafLeft : Path
+leafLeft : Path msg
 leafLeft =
     Path
         """
@@ -289,7 +262,7 @@ leafLeft =
         style4_XXX
 
 
-leafMiddle : Path
+leafMiddle : Path msg
 leafMiddle =
     Path
         """
@@ -303,7 +276,7 @@ leafMiddle =
         style2_XXX
 
 
-leafRight : Path
+leafRight : Path msg
 leafRight =
     Path
         """

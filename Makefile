@@ -1,6 +1,6 @@
 ELMFLAGS =
 
-index.html: src/Main.elm
+index.html: src/Main.elm elm.json
 	elm make $(ELMFLAGS) $<
 
 mostlyclean:

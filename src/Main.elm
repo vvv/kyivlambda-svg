@@ -35,7 +35,7 @@ type Model
 
 init : Model
 init =
-    KyivMetro
+    Haskell
 
 
 ----------------------------------------------------------------------
@@ -47,14 +47,11 @@ view model =
     TSvg.svg (attributes model) (svgs model)
 
 
-----------------------------------------------------------------------
-
-
 attributes : Model -> List (Attribute msg)
 attributes model =
     case model of
         Haskell ->
-            [ viewBox 0 0 170 120 ]
+            [ width 340, height 240, viewBox 0 0 170 120 ]
 
         KyivMetro ->
             [ width 311.75, height 363.125 ]
@@ -72,16 +69,16 @@ type alias Path msg =
 svgs : Model -> List (Svg msg)
 svgs model =
     let
-        path : Path msg -> Svg msg
-        path p =
+        pathToSvg : Path msg -> Svg msg
+        pathToSvg p =
             TSvg.path (TSvgA.d p.d :: p.style model) []
     in
     case model of
         Haskell ->
-            Debug.todo "XXX IMPLEMENTME"
+            List.map pathToSvg [ gtSymbol, lambdaSymbol, eqSymbol ]
 
         KyivMetro ->
-            List.map path
+            List.map pathToSvg
                 [ outerArc
                 , innerSemicircle
                 , letterM
@@ -100,8 +97,8 @@ svgs model =
 -- https://upload.wikimedia.org/wikipedia/commons/1/1c/Haskell-Logo.svg
 
 
-element1_XXX : Path msg
-element1_XXX =
+gtSymbol : Path msg
+gtSymbol =
     Path
         """
         M 0,120
@@ -112,7 +109,42 @@ element1_XXX =
         L 30,120
         z
         """
-        (Debug.todo "XXX IMPLEMENTME")
+        (List.singleton << fill << colorLeaf)
+
+
+lambdaSymbol : Path msg
+lambdaSymbol =
+    Path
+        """
+        M 40,120
+        L 80,60
+        L 40,0
+        L 70 0
+        L 150,120
+        L 120,120
+        L 95,82.5
+        L 70,120
+        z
+        """
+        (List.singleton << fill << Fill << always (rgb255 0x68 0x5a 0x93))
+
+
+eqSymbol : Path msg
+eqSymbol =
+    Path
+        """
+        M 116.666667,55
+        L 103.333333,35
+        L 170,35
+        L 170,55
+        z
+        M 136.666667,85
+        L 123.333333,65
+        L 170,65
+        L 170,85
+        z
+        """
+        (List.singleton << fill << Fill << always (rgb255 0x8f 0x52 0x8c))
 
 
 ----------------------------------------------------------------------

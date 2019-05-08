@@ -51,7 +51,7 @@ type Model
 
 init : Model
 init =
-    Rust
+    KyivRust
 
 
 ----------------------------------------------------------------------
@@ -76,6 +76,9 @@ attributes model =
             [ width 311.75, height 363.125 ]
 
         KyivHaskell ->
+            [ width 311.75, height 363.125 ]
+
+        KyivRust ->
             [ width 311.75, height 363.125 ]
 
         _ ->
@@ -124,11 +127,27 @@ svgs model =
                 , leafRight
                 ]
                 ++ [ node "svg"
-                        [ viewBox 0 0 170 120 ]  -- XXX Use `attributes`?
+                        [ viewBox 0 0 170 120 ]
+                        -- XXX Use `attributes`?
                         [ TSvg.g
                             [ transform [ Scale 0.65 0.65, Translate 55 -15 ] ]
                             (svgs Haskell)
                         ]
+                   ]
+
+        KyivRust ->
+            List.map pathToSvg
+                [ leafLeft
+                , leafMiddle
+                , leafRight
+                ]
+                ++ [ node "svg"
+                        []
+                        [ TSvg.g
+                            [ transform [ Scale 2 2, Translate 7 -18 ] ]
+                            (svgs Rust)
+                        ]
+
                    ]
 
         _ ->
@@ -226,10 +245,13 @@ rustCogs =
 fillLeaf : Model -> Fill
 fillLeaf model =
     Fill <|
-        if model == KyivMetro then
-            rgb255 0 0x92 0x3f
-        else
-            rgb255 0x46 0x3c 0x62
+        case model of
+            KyivMetro ->
+                rgb255 0 0x92 0x3f
+            KyivRust ->
+                black
+            _ ->
+                rgb255 0x46 0x3c 0x62
 
 
 fillEdge : Model -> Fill

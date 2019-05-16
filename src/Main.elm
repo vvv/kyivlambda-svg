@@ -100,6 +100,10 @@ svgs model =
             TSvg.path
                 (TSvgA.d p.d :: TSvgA.fill (p.fill model) :: p.otherAttrs)
                 []
+
+        leaves : List (Svg msg)
+        leaves =
+            List.map pathToSvg [ leafLeft, leafMiddle, leafRight ]
     in
     case model of
         Haskell ->
@@ -114,18 +118,11 @@ svgs model =
                 , innerSemicircle
                 , letterM
                 , leavesBg
-                , leafLeft
-                , leafMiddle
-                , leafRight
                 ]
+                ++ leaves
 
         KyivHaskell ->
-            List.map pathToSvg
-                [ outerArc
-                , leafLeft
-                , leafMiddle
-                , leafRight
-                ]
+            (pathToSvg outerArc :: leaves)
                 ++ [ node "svg"
                         [ viewBox 0 0 170 120 ]
                         -- XXX Use `attributes`?
@@ -136,18 +133,13 @@ svgs model =
                    ]
 
         KyivRust ->
-            List.map pathToSvg
-                [ leafLeft
-                , leafMiddle
-                , leafRight
-                ]
+            leaves
                 ++ [ node "svg"
                         []
                         [ TSvg.g
                             [ transform [ Scale 2 2, Translate 7 -18 ] ]
                             (svgs Rust)
                         ]
-
                    ]
 
         _ ->
